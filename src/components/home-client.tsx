@@ -16,7 +16,7 @@ const staggerParent = {
     y: 0,
     transition: {
       duration: 0.5,
-      ease: [0.21, 0.45, 0.18, 1],
+      ease: "easeOut",
     },
   },
 };
@@ -80,11 +80,11 @@ export function HomeClient({ latest }: Props) {
           <motion.div
             initial="hidden"
             animate="show"
-            variants={staggerParent}
+            variants={staggerParent as any}
             className="space-y-8"
           >
             <motion.div
-              variants={staggerParent}
+              variants={staggerParent as any}
               className="inline-flex items-center gap-2 mt-2"
             >
               <span className="text-xs font-medium uppercase tracking-[0.22em] text-emerald-300/80">
@@ -92,7 +92,7 @@ export function HomeClient({ latest }: Props) {
               </span>
             </motion.div>
 
-            <motion.div variants={staggerParent} className="space-y-4">
+            <motion.div variants={staggerParent as any} className="space-y-4">
               <h1
                 className={`text-balance text-4xl font-semibold tracking-tight text-zinc-50 sm:text-5xl lg:text-6xl ${
                   isArabic ? "w-full text-right pr-6 leading-relaxed" : "max-w-xl"
@@ -109,7 +109,7 @@ export function HomeClient({ latest }: Props) {
             </motion.div>
 
             <motion.div
-              variants={staggerParent}
+              variants={staggerParent as any}
               className="flex flex-col gap-4 sm:flex-row sm:items-center"
             >
               <Button
@@ -141,7 +141,7 @@ export function HomeClient({ latest }: Props) {
             </motion.div>
 
             <motion.div
-              variants={staggerParent}
+              variants={staggerParent as any}
               className="flex flex-wrap items-center gap-3 text-xs text-zinc-400"
             >
               <div className="inline-flex items-center gap-2 rounded-full bg-zinc-900/70 px-3 py-1 ring-1 ring-white/5">
@@ -159,7 +159,7 @@ export function HomeClient({ latest }: Props) {
           <motion.div
             initial={{ opacity: 0, y: 26, rotate: 2 }}
             animate={{ opacity: 1, y: 0, rotate: 0 }}
-            transition={{ duration: 0.7, delay: 0.15, ease: [0.21, 0.45, 0.18, 1] }}
+            transition={{ duration: 0.7, delay: 0.15, ease: "easeOut" }}
             className="relative mt-6 flex items-center justify-center"
           >
             {/* Gradient-bordered app frame */}
@@ -313,7 +313,7 @@ function FeatureCard({ title, body }: FeatureCardProps) {
       initial={{ opacity: 0, y: 10 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.4 }}
-      transition={{ duration: 0.45, ease: [0.26, 0.55, 0.16, 0.98] }}
+      transition={{ duration: 0.45, ease: "easeOut" }}
       className="group relative overflow-hidden rounded-2xl border border-white/5 bg-zinc-950/60 p-4 ring-1 ring-black/40"
     >
       <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
