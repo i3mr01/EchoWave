@@ -18,6 +18,20 @@ export function Footer() {
         </p>
         <div className="flex items-center gap-4">
           <Link
+            href="/updates"
+            className="text-[0.7rem] font-medium text-zinc-300 hover:text-indigo-300"
+          >
+            Updates
+          </Link>
+          <span className="h-1 w-1 rounded-full bg-zinc-600" />
+          <Link
+            href="/privacy"
+            className="text-[0.7rem] font-medium text-zinc-300 hover:text-indigo-300"
+          >
+            Privacy
+          </Link>
+          <span className="h-1 w-1 rounded-full bg-zinc-600" />
+          <Link
             href="https://github.com/i3mr01"
             target="_blank"
             rel="noreferrer"

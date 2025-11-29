@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { Download, MonitorSmartphone, Shield } from "lucide-react";
+import { Download, MonitorSmartphone, Shield, Rocket } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import type { EchoWaveBuild } from "@/lib/get-latest-build";
@@ -87,6 +87,10 @@ export function HomeClient({ latest }: Props) {
               variants={staggerParent as any}
               className="inline-flex items-center gap-2 mt-2"
             >
+              <Link href="/updates" className="inline-flex items-center gap-2 rounded-full bg-indigo-500/10 px-3 py-1 text-xs font-medium text-indigo-300 ring-1 ring-indigo-500/20 transition hover:bg-indigo-500/20 hover:text-indigo-200">
+                <Rocket className="h-3 w-3" />
+                {isArabic ? "جديد: الإصدار 1.5.1" : "New: Version 1.5.1"}
+              </Link>
               <span className="text-xs font-medium uppercase tracking-[0.22em] text-emerald-300/80">
                 {t.heroKicker}
               </span>
@@ -376,19 +380,19 @@ const en = {
     "EchoWave wraps powerful tooling in a clean interface. No terminals, no ads, just your library – exactly how you like it.",
   feature1Title: "Paste & download",
   feature1Body:
-    "Drop in any link and EchoWave analyzes formats, thumbnails, and metadata for you.",
+    "Drop in any link from YouTube or Spotify, and EchoWave analyzes formats, thumbnails, and metadata for you.",
   feature2Title: "Smart quality",
   feature2Body:
     "Choose best available 4K/8K, Full HD, or lean files for playlists and archives.",
   feature3Title: "Audio-first mode",
   feature3Body:
     "Rip just the audio with embedded thumbnail, metadata, and optional subtitles.",
-  feature4Title: "Queue & history",
+  feature4Title: "Playlists & Queue",
   feature4Body:
-    "Pick up where you left off with a persistent history of your downloads.",
-  feature5Title: "Native Windows feel",
+    "Download entire playlists from YouTube or Spotify in a single click, with a persistent history.",
+  feature5Title: "Auto-Updating",
   feature5Body:
-    "Polished Mica-style window, tray controls, and dark theme that feels at home.",
+    "Polished Mica-style window, dark theme, and built-in auto-updates so you're always on the latest version.",
   feature6Title: "Private & local-first",
   feature6Body:
     "History, links, and downloads stay on your machine – no account, no tracking.",
@@ -409,10 +413,10 @@ const en = {
   faqKicker: "Q&A",
   faqTitle: "What can EchoWave actually download?",
   faqBody:
-    "EchoWave can download video and audio from popular platforms like YouTube, SoundCloud, TikTok, and Facebook, plus many other video and streaming sites – whether it’s a single video or a full playlist.",
+    "EchoWave can download video and audio from popular platforms like YouTube, Spotify, SoundCloud, TikTok, and Facebook, plus many other video and streaming sites – whether it’s a single video or a full playlist.",
   faq1Q: "Can EchoWave download playlists and full albums?",
   faq1A:
-    "Yes. Paste a playlist link and EchoWave can queue multiple videos or tracks at once, using your chosen quality and format.",
+    "Yes. Paste a playlist link from YouTube or Spotify and EchoWave can queue multiple videos or tracks at once, using your chosen quality and format.",
   faq2Q: "What formats and qualities are available?",
   faq2A:
     "You can target best available 4K/8K where supported, standard HD options, or lighter files. For audio you can grab high-quality formats suitable for music libraries.",
@@ -439,19 +443,19 @@ const ar = {
     "يجمع إيكو ويف بين أدوات قوية وواجهة بسيطة. لا أوامر معقّدة، لا إعلانات، فقط مكتبتك بالشكل الذي تريده.",
   feature1Title: "الصق الرابط وابدأ التنزيل",
   feature1Body:
-    "ألصق أي رابط وسيقوم إيكو ويف بتحليل الجودة، التنسيقات، والصورة المصغّرة من أجلك.",
+    "ألصق أي رابط من يوتيوب أو سبوتيفاي وسيقوم إيكو ويف بتحليل الجودة، التنسيقات، والصورة المصغّرة من أجلك.",
   feature2Title: "جودة ذكية",
   feature2Body:
     "اختر أفضل جودة متاحة 4K/8K أو دقّة أقل للقوائم الطويلة والتحميل السريع.",
   feature3Title: "وضع الصوت فقط",
   feature3Body:
     "استخرج الصوت فقط مع تضمين الصورة المصغّرة والبيانات الوصفية والترجمة اختيارياً.",
-  feature4Title: "قائمة انتظار وسجل دائم",
+  feature4Title: "قوائم التشغيل وقائمة الانتظار",
   feature4Body:
-    "استكمل من حيث توقفت مع سجل تنزيلات واضح يحفظ كل ما حملته.",
-  feature5Title: "تجربة أصلية لويندوز",
+    "حمّل قوائم تشغيل كاملة من يوتيوب أو سبوتيفاي بنقرة واحدة، مع سجل دائم لكل ما قمت بتنزيله.",
+  feature5Title: "تحديث تلقائي وتصميم عصري",
   feature5Body:
-    "واجهة داكنة بنمط Mica، مع أيقونة في شريط النظام وإحساس متكامل مع ويندوز.",
+    "واجهة داكنة بنمط Mica مع ميزة التحديث التلقائي لتبقى دائماً على أحدث إصدار.",
   feature6Title: "خصوصية أولاً",
   feature6Body:
     "كل الروابط والسجل والملفات تبقى على جهازك فقط - لا حسابات، لا تتبّع.",
@@ -472,10 +476,10 @@ const ar = {
   faqKicker: "أسئلة وأجوبة",
   faqTitle: "ما الذي يستطيع إيكو ويف تنزيله فعلياً؟",
   faqBody:
-    "إيكو ويف يستطيع تنزيل الفيديو والصوت من منصّات شهيرة مثل يوتيوب، ساوندكلاود، تيك توك، وفيسبوك، بالإضافة إلى كثير من مواقع الفيديو والبث الأخرى، سواء كانت فيديوهات منفردة أو قوائم تشغيل كاملة.",
+    "إيكو ويف يستطيع تنزيل الفيديو والصوت من منصّات شهيرة مثل يوتيوب، سبوتيفاي، ساوندكلاود، تيك توك، وفيسبوك، بالإضافة إلى كثير من مواقع الفيديو والبث الأخرى، سواء كانت فيديوهات منفردة أو قوائم تشغيل كاملة.",
   faq1Q: "هل يمكن لإيكو ويف تنزيل قوائم تشغيل وألبومات كاملة؟",
   faq1A:
-    "نعم. فقط ألصق رابط قائمة التشغيل وسيقوم إيكو ويف بإنشاء قائمة تنزيل لعدّة فيديوهات أو مقاطع صوتية دفعة واحدة مع ضبط الجودة والتنسيق الذي تختاره.",
+    "نعم. فقط ألصق رابط قائمة تشغيل من يوتيوب أو سبوتيفاي وسيقوم إيكو ويف بإنشاء قائمة تنزيل لعدّة فيديوهات أو مقاطع صوتية دفعة واحدة.",
   faq2Q: "ما هي الصيغ والجودات المتاحة؟",
   faq2A:
     "يمكنك اختيار أفضل جودة متاحة حتى 4K/8K عند توفرها، أو استخدام دقّات HD القياسية، أو ملفات أخف للقوائم الطويلة. للصوت يمكنك تنزيل صيغ عالية الجودة مناسبة لمكتبة الموسيقى لديك.",
