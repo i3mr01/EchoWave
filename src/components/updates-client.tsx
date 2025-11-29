@@ -198,10 +198,15 @@ export function UpdatesClient() {
         <button
           type="button"
           onClick={() => setLang(lang === "en" ? "ar" : "en")}
-          className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-black/70 text-[0.65rem] font-semibold uppercase text-zinc-200 shadow-lg shadow-black/40 backdrop-blur-md transition hover:border-indigo-400/70 hover:text-white"
+          className="group flex items-center gap-2 rounded-full border border-white/5 bg-zinc-900/50 pl-2 pr-3 py-1.5 text-xs font-medium text-zinc-400 backdrop-blur-xl transition-all hover:border-white/10 hover:bg-zinc-900/80 hover:text-zinc-100"
           aria-label={lang === "en" ? "Switch to Arabic" : "التبديل إلى الإنجليزية"}
         >
-          {lang === "en" ? "EN" : "AR"}
+          <div className="flex h-5 w-5 items-center justify-center rounded-full bg-white/5 transition-colors group-hover:bg-indigo-500/20 group-hover:text-indigo-300">
+            <Globe className="h-3 w-3" />
+          </div>
+          <span className={lang === "en" ? "font-[family-name:var(--font-arabic)]" : "font-sans"}>
+            {lang === "en" ? "العربية" : "English"}
+          </span>
         </button>
       </div>
 
