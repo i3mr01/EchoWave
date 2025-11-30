@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <item>
-    <version>1.5.1.0</version>
-    <url>https://github.com/i3mr01/EchoWave/releases/download/v1.5.1.0/EchoWave-Setup-v1.5.1.exe</url>
+    <version>1.5.2.0</version>
+    <url>https://github.com/i3mr01/EchoWave/releases/download/v1.5.2/EchoWave-Setup-v1.5.2.exe</url>
     <changelog>https://www.echowave1.tech/updates</changelog>
     <mandatory>true</mandatory>
 </item>
