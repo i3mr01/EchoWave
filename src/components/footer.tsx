@@ -5,7 +5,7 @@ export function Footer() {
     <footer className="border-t border-white/5 bg-black/40 px-4 py-6 text-xs text-zinc-500 backdrop-blur-sm sm:px-6 lg:px-8">
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 sm:flex-row">
         <p className="text-[0.7rem] text-zinc-500">
-          EchoWave &mdash; crafted for Windows by{" "}
+          EchoWave - crafted for Windows by{" "}
           <Link
             href="https://github.com/i3mr01"
             target="_blank"
