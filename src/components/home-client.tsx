@@ -164,6 +164,7 @@ export function HomeClient({ latest }: Props) {
             >
               <div className="ms-store-badge-wrapper inline-flex soft-shadow rounded-xl bg-gradient-to-r from-indigo-500/10 via-sky-500/10 to-emerald-500/10 p-[2px]">
                 <div className="ms-store-badge-container rounded-xl bg-white backdrop-blur-sm overflow-hidden" style={{ colorScheme: 'light' }}>
+                  {/* @ts-ignore - Custom web component from Microsoft Store */}
                   <ms-store-badge
                     productid="9PF3FZJ8ZR73"
                     productname="EchoWave"
