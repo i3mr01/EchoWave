@@ -173,6 +173,7 @@ export function HomeClient({ latest }: Props) {
                     size="large"
                     language={lang === "ar" ? "ar-sa" : "en-us"}
                     animation="on"
+                  {/* @ts-ignore */}
                   ></ms-store-badge>
                 </div>
               </div>
