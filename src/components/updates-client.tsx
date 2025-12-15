@@ -5,18 +5,6 @@ import { useState } from "react";
 import { ArrowLeft, Sparkles, Download, Settings, Globe, Zap, List, X, RotateCcw, Rocket, FileText, AppWindow, Bell } from "lucide-react";
 import { motion } from "framer-motion";
 
-const staggerParent = {
-  hidden: { opacity: 0, y: 12 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.5,
-      ease: "easeOut",
-    },
-  },
-} as const;
-
 const en = {
   title: "What's New",
   subtitle: "Latest updates, features, and improvements",
@@ -43,8 +31,8 @@ const en = {
   clearHistoryDesc: "Quickly remove completed downloads from the list.",
   settingsRedesign: "Settings Redesign",
   settingsDesc: "A completely new, cleaner, and more organized Settings UI.",
-  perfectInstaller: "Perfect Installer",
-  installerDesc: "New installer (v1.5) that runs as Admin, fixes uninstallation issues, and properly registers the app.",
+  perfectInstaller: "Microsoft Store Release",
+  installerDesc: "EchoWave is now available on the official Microsoft Store for easier installation and automatic updates.",
   appIconFix: "App Icon Fix",
   iconFixDesc: "Solved the issue where the logo wasn't showing on the Taskbar or Desktop shortcuts.",
   downloadNotifications: "Download Notifications",
@@ -81,8 +69,8 @@ const ar = {
   clearHistoryDesc: "أزل التنزيلات المكتملة من القائمة بسرعة.",
   settingsRedesign: "إعادة تصميم الإعدادات",
   settingsDesc: "واجهة إعدادات جديدة تماماً، أنظف وأكثر تنظيماً.",
-  perfectInstaller: "مثبت مثالي",
-  installerDesc: "مثبت جديد (v1.5) يعمل كمسؤول، يصلح مشاكل إلغاء التثبيت ويسجل التطبيق بشكل صحيح.",
+  perfectInstaller: "إصدار متجر مايكروسوفت",
+  installerDesc: "إيكو ويف متاح الآن على متجر مايكروسوفت الرسمي لتثبيت أسهل وتحديثات تلقائية.",
   appIconFix: "إصلاح أيقونة التطبيق",
   iconFixDesc: "تم حل مشكلة عدم ظهور الشعار في شريط المهام أو اختصارات سطح المكتب.",
   downloadNotifications: "إشعارات التنزيل",
@@ -192,7 +180,14 @@ export function UpdatesClient() {
   const localizationFeatures = features.filter((f) => f.category === "localization");
 
   return (
-    <main className="echowave-shell" dir={isArabic ? "rtl" : "ltr"}>
+    <main className="echowave-shell relative overflow-hidden" dir={isArabic ? "rtl" : "ltr"}>
+      {/* Animated background */}
+      <div className="pointer-events-none fixed inset-0 -z-10">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(99,102,241,0.15),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_60%,rgba(56,189,248,0.12),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_80%,rgba(16,185,129,0.08),transparent_50%)]" />
+      </div>
+
       {/* Floating language switcher */}
       <div className="fixed right-4 top-4 z-30 sm:right-6 sm:top-6">
         <button
@@ -210,230 +205,183 @@ export function UpdatesClient() {
         </button>
       </div>
 
-      <div className="relative mx-auto flex min-h-screen max-w-4xl flex-col px-4 pb-20 pt-10 sm:px-6 lg:px-8 lg:pt-12">
-        {/* Background accents */}
-        <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-          <div className="hero-gradient absolute inset-0 opacity-90" />
-          <div className="absolute -left-32 top-40 h-72 w-72 rounded-full bg-gradient-to-br from-indigo-500/25 via-sky-400/20 to-transparent blur-3xl" />
-          <div className="absolute -right-32 top-64 h-72 w-72 rounded-full bg-gradient-to-br from-sky-500/25 via-emerald-400/10 to-transparent blur-3xl" />
-        </div>
-
+      <div className="relative mx-auto flex min-h-screen max-w-5xl flex-col px-4 pb-20 pt-10 sm:px-6 lg:px-8 lg:pt-12">
         {/* Header */}
         <motion.header
-          initial="hidden"
-          animate="show"
-          variants={staggerParent}
-          className="mb-8 flex items-center justify-between gap-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
+          className="mb-10 flex items-center justify-between gap-4"
         >
           <Link
             href="/"
-            className="group inline-flex items-center gap-2 text-sm text-zinc-400 transition hover:text-zinc-50"
+            className="group inline-flex items-center gap-2 rounded-lg bg-zinc-900/40 px-3 py-2 text-sm text-zinc-300 ring-1 ring-white/5 transition-all hover:bg-zinc-900/60 hover:text-zinc-50 hover:ring-white/10"
           >
             <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
             {t.backToHome}
           </Link>
         </motion.header>
 
-        {/* Title */}
-        <motion.div
-          initial="hidden"
-          animate="show"
-          variants={staggerParent}
-          className="mb-12 space-y-3"
-        >
-          <h1 className="text-4xl font-semibold tracking-tight text-zinc-50 sm:text-5xl">
-            {t.title}
-          </h1>
-          <p className="text-sm text-zinc-400 sm:text-base">{t.subtitle}</p>
-        </motion.div>
-
-        {/* Version Card */}
+        {/* Hero Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="glass-surface soft-shadow mb-8 overflow-hidden rounded-3xl border border-indigo-500/30 bg-gradient-to-br from-indigo-500/10 via-zinc-950/95 to-black/95 p-6 sm:p-8"
+          transition={{ duration: 0.4, delay: 0.1 }}
+          className="relative mb-16 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-indigo-500/20 via-purple-500/10 to-zinc-950/95 p-8 shadow-2xl sm:p-12"
         >
-          <div className="flex items-start justify-between gap-4">
-            <div className="space-y-2">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-zinc-900 ring-1 ring-zinc-800">
-                  <Rocket className="h-5 w-5 text-zinc-100" />
-                </div>
-                <div>
-                  <h2 className="text-xl font-semibold text-zinc-50 sm:text-2xl">
-                    {t.version} 1.5.1.0
-                  </h2>
-                  <p className="text-xs text-zinc-400">{t.released}</p>
-                </div>
-              </div>
+          {/* Decorative elements */}
+          <div className="pointer-events-none absolute -right-20 -top-20 h-60 w-60 rounded-full bg-indigo-500/20 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-20 -left-20 h-60 w-60 rounded-full bg-purple-500/20 blur-3xl" />
+          
+          <div className="relative">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-emerald-300">
+              <div className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
+              Latest Release
             </div>
-            <div className="rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-300 ring-1 ring-emerald-400/30">
-              Latest
-            </div>
+            
+            <h1 className="mb-4 text-5xl font-bold tracking-tight text-white sm:text-6xl">
+              {t.version} <span className="bg-gradient-to-r from-indigo-300 via-purple-300 to-pink-300 bg-clip-text text-transparent">1.5.2</span>
+            </h1>
+            
+            <p className="max-w-2xl text-lg text-zinc-300">
+              {t.subtitle}
+            </p>
           </div>
         </motion.div>
 
         {/* Major Features */}
         <motion.section
-          initial="hidden"
-          animate="show"
-          variants={staggerParent}
-          className="mb-10"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4, delay: 0.2 }}
+          className="mb-12"
         >
-          <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-zinc-50">
-            <div className="h-1 w-1 rounded-full bg-indigo-400" />
-            {t.majorFeatures}
-          </h3>
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="mb-6 flex items-center gap-3">
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
+            <h3 className="text-xl font-bold text-zinc-50">
+              {t.majorFeatures}
+            </h3>
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {majorFeatures.map((feature, idx) => (
-              <motion.div
+              <div
                 key={feature.titleKey}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.2 + idx * 0.05 }}
-                className="group relative overflow-hidden rounded-2xl border border-white/5 bg-zinc-950/60 p-4 ring-1 ring-black/40 transition hover:border-indigo-500/30"
+                className="group relative overflow-hidden rounded-xl border border-indigo-500/20 bg-zinc-950/80 p-5 backdrop-blur-sm transition-all duration-300 hover:border-indigo-400/40 hover:bg-zinc-900/80"
+                style={{ animationDelay: `${idx * 50}ms` }}
               >
-                <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                  <div className="absolute -top-12 right-0 h-24 w-24 rounded-full bg-gradient-to-br from-indigo-400/35 via-sky-400/20 to-transparent blur-2xl" />
+                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-500/20 text-indigo-300 ring-1 ring-indigo-400/30 transition-transform duration-300 group-hover:scale-110">
+                  {feature.icon}
                 </div>
-                <div className="relative flex items-start gap-3">
-                  <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-indigo-500/20 text-indigo-300 ring-1 ring-indigo-400/30">
-                    {feature.icon}
-                  </div>
-                  <div className="min-w-0 flex-1 space-y-1">
-                    <h4 className="text-sm font-semibold text-zinc-50">
-                      {t[feature.titleKey]}
-                    </h4>
-                    <p className="text-xs leading-relaxed text-zinc-400">
-                      {t[feature.descKey]}
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
+                <h4 className="mb-1.5 text-sm font-bold text-zinc-50">
+                  {t[feature.titleKey]}
+                </h4>
+                <p className="text-xs leading-relaxed text-zinc-400">
+                  {t[feature.descKey]}
+                </p>
+              </div>
             ))}
           </div>
         </motion.section>
 
         {/* Download Management */}
         <motion.section
-          initial="hidden"
-          animate="show"
-          variants={staggerParent}
-          className="mb-10"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4, delay: 0.25 }}
+          className="mb-12"
         >
-          <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-zinc-50">
-            <div className="h-1 w-1 rounded-full bg-sky-400" />
-            {t.downloadManagement}
-          </h3>
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="mb-6 flex items-center gap-3">
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-sky-500/50 to-transparent" />
+            <h3 className="text-xl font-bold text-zinc-50">
+              {t.downloadManagement}
+            </h3>
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-sky-500/50 to-transparent" />
+          </div>
+          <div className="grid gap-3 sm:grid-cols-3">
             {downloadFeatures.map((feature, idx) => (
-              <motion.div
+              <div
                 key={feature.titleKey}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.4 + idx * 0.05 }}
-                className="group relative overflow-hidden rounded-2xl border border-white/5 bg-zinc-950/60 p-4 ring-1 ring-black/40 transition hover:border-sky-500/30"
+                className="group relative overflow-hidden rounded-xl border border-sky-500/20 bg-zinc-950/80 p-5 backdrop-blur-sm transition-all duration-300 hover:border-sky-400/40 hover:bg-zinc-900/80"
               >
-                <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                  <div className="absolute -top-12 right-0 h-24 w-24 rounded-full bg-gradient-to-br from-sky-400/35 via-emerald-400/20 to-transparent blur-2xl" />
+                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-sky-500/20 text-sky-300 ring-1 ring-sky-400/30 transition-transform duration-300 group-hover:scale-110">
+                  {feature.icon}
                 </div>
-                <div className="relative flex items-start gap-3">
-                  <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-sky-500/20 text-sky-300 ring-1 ring-sky-400/30">
-                    {feature.icon}
-                  </div>
-                  <div className="min-w-0 flex-1 space-y-1">
-                    <h4 className="text-sm font-semibold text-zinc-50">
-                      {t[feature.titleKey]}
-                    </h4>
-                    <p className="text-xs leading-relaxed text-zinc-400">
-                      {t[feature.descKey]}
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
+                <h4 className="mb-1.5 text-sm font-bold text-zinc-50">
+                  {t[feature.titleKey]}
+                </h4>
+                <p className="text-xs leading-relaxed text-zinc-400">
+                  {t[feature.descKey]}
+                </p>
+              </div>
             ))}
           </div>
         </motion.section>
 
         {/* UI Improvements */}
         <motion.section
-          initial="hidden"
-          animate="show"
-          variants={staggerParent}
-          className="mb-10"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4, delay: 0.3 }}
+          className="mb-12"
         >
-          <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-zinc-50">
-            <div className="h-1 w-1 rounded-full bg-emerald-400" />
-            {t.uiImprovements}
-          </h3>
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="mb-6 flex items-center gap-3">
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent" />
+            <h3 className="text-xl font-bold text-zinc-50">
+              {t.uiImprovements}
+            </h3>
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent" />
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {uiFeatures.map((feature, idx) => (
-              <motion.div
+              <div
                 key={feature.titleKey}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.6 + idx * 0.05 }}
-                className="group relative overflow-hidden rounded-2xl border border-white/5 bg-zinc-950/60 p-4 ring-1 ring-black/40 transition hover:border-emerald-500/30"
+                className="group relative overflow-hidden rounded-xl border border-emerald-500/20 bg-zinc-950/80 p-5 backdrop-blur-sm transition-all duration-300 hover:border-emerald-400/40 hover:bg-zinc-900/80"
               >
-                <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                  <div className="absolute -top-12 right-0 h-24 w-24 rounded-full bg-gradient-to-br from-emerald-400/35 via-indigo-400/20 to-transparent blur-2xl" />
+                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-400/30 transition-transform duration-300 group-hover:scale-110">
+                  {feature.icon}
                 </div>
-                <div className="relative flex items-start gap-3">
-                  <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-400/30">
-                    {feature.icon}
-                  </div>
-                  <div className="min-w-0 flex-1 space-y-1">
-                    <h4 className="text-sm font-semibold text-zinc-50">
-                      {t[feature.titleKey]}
-                    </h4>
-                    <p className="text-xs leading-relaxed text-zinc-400">
-                      {t[feature.descKey]}
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
+                <h4 className="mb-1.5 text-sm font-bold text-zinc-50">
+                  {t[feature.titleKey]}
+                </h4>
+                <p className="text-xs leading-relaxed text-zinc-400">
+                  {t[feature.descKey]}
+                </p>
+              </div>
             ))}
           </div>
         </motion.section>
 
         {/* Localization */}
         <motion.section
-          initial="hidden"
-          animate="show"
-          variants={staggerParent}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4, delay: 0.35 }}
           className="mb-10"
         >
-          <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-zinc-50">
-            <div className="h-1 w-1 rounded-full bg-purple-400" />
-            {t.localization}
-          </h3>
+          <div className="mb-6 flex items-center gap-3">
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
+            <h3 className="text-xl font-bold text-zinc-50">
+              {t.localization}
+            </h3>
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
+          </div>
           <div className="grid gap-3 sm:grid-cols-2">
             {localizationFeatures.map((feature, idx) => (
-              <motion.div
+              <div
                 key={feature.titleKey}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.8 + idx * 0.05 }}
-                className="group relative overflow-hidden rounded-2xl border border-white/5 bg-zinc-950/60 p-4 ring-1 ring-black/40 transition hover:border-purple-500/30"
+                className="group relative overflow-hidden rounded-xl border border-purple-500/20 bg-zinc-950/80 p-5 backdrop-blur-sm transition-all duration-300 hover:border-purple-400/40 hover:bg-zinc-900/80"
               >
-                <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                  <div className="absolute -top-12 right-0 h-24 w-24 rounded-full bg-gradient-to-br from-purple-400/35 via-pink-400/20 to-transparent blur-2xl" />
+                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-purple-500/20 text-purple-300 ring-1 ring-purple-400/30 transition-transform duration-300 group-hover:scale-110">
+                  {feature.icon}
                 </div>
-                <div className="relative flex items-start gap-3">
-                  <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-purple-500/20 text-purple-300 ring-1 ring-purple-400/30">
-                    {feature.icon}
-                  </div>
-                  <div className="min-w-0 flex-1 space-y-1">
-                    <h4 className="text-sm font-semibold text-zinc-50">
-                      {t[feature.titleKey]}
-                    </h4>
-                    <p className="text-xs leading-relaxed text-zinc-400">
-                      {t[feature.descKey]}
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
+                <h4 className="mb-1.5 text-sm font-bold text-zinc-50">
+                  {t[feature.titleKey]}
+                </h4>
+                <p className="text-xs leading-relaxed text-zinc-400">
+                  {t[feature.descKey]}
+                </p>
+              </div>
             ))}
           </div>
         </motion.section>

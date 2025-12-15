@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Noto_Sans_Arabic } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { SmoothScroller } from "@/components/smooth-scroller";
 import { Footer } from "@/components/footer";
@@ -26,6 +27,9 @@ export const metadata: Metadata = {
     "EchoWave is a fast, modern desktop app for downloading video and audio from anywhere on the web. Simple, powerful, and built for Windows.",
   metadataBase:
     typeof window === "undefined" ? new URL("https://echowave.app") : undefined,
+  icons: {
+    icon: '/favicon.ico',
+  },
   openGraph: {
     title: "EchoWave - Download video and audio from anywhere",
     description:
@@ -50,6 +54,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${arabic.variable} antialiased bg-echowave-950 text-zinc-50`}
       >
+        <Script
+          src="https://get.microsoft.com/badge/ms-store-badge.bundled.js"
+          strategy="lazyOnload"
+        />
         <SmoothScroller>
           <div className="flex min-h-screen flex-col">
             <div className="flex-1">{children}</div>

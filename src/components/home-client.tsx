@@ -2,12 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
-import { Download, MonitorSmartphone, Shield, Rocket, Globe } from "lucide-react";
+import { useState, useEffect } from "react";
+import { MonitorSmartphone, Shield, Rocket, Globe } from "lucide-react";
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
 import type { EchoWaveBuild } from "@/lib/get-latest-build";
-import screenshot from "../../Resources/sc1.png";
+import { StoreNotification } from "@/components/store-notification";
+import screenshot from "../../Resources/screenshot.png";
 
 const staggerParent = {
   hidden: { opacity: 0, y: 12 },
@@ -34,8 +34,49 @@ export function HomeClient({ latest }: Props) {
     process.env.NEXT_PUBLIC_ECHOWAVE_DOWNLOAD_URL || "";
   const hasHostedDownload = hostedDownloadUrl.length > 0;
 
+  useEffect(() => {
+    // Force light color scheme for MS Store badge
+    const forceLight = () => {
+      const badgeContainer = document.querySelector('.ms-store-badge-container');
+      const badge = document.querySelector('ms-store-badge');
+      
+      if (badgeContainer) {
+        (badgeContainer as HTMLElement).style.colorScheme = 'light';
+        badgeContainer.setAttribute('data-color-scheme', 'light');
+      }
+      
+      if (badge) {
+        (badge as HTMLElement).style.colorScheme = 'light';
+        badge.setAttribute('data-color-scheme', 'light');
+        badge.setAttribute('theme', 'light');
+      }
+    };
+    
+    // Run immediately
+    forceLight();
+    
+    // Run after a delay to catch late rendering
+    const timer = setTimeout(forceLight, 100);
+    
+    // Run on any page visibility change
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible') {
+        forceLight();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+    
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener('visibilitychange', handleVisibility);
+    };
+  }, []);
+
   return (
     <main className="echowave-shell" dir={lang === "ar" ? "rtl" : "ltr"}>
+      {/* Store notification */}
+      <StoreNotification lang={lang} />
+      
       {/* Floating language switcher */}
       <div className="fixed right-4 top-4 z-30 sm:right-6 sm:top-6">
         <button
@@ -94,7 +135,7 @@ export function HomeClient({ latest }: Props) {
             >
               <Link href="/updates" className="inline-flex items-center gap-2 rounded-full bg-indigo-500/10 px-3 py-1 text-xs font-medium text-indigo-300 ring-1 ring-indigo-500/20 transition hover:bg-indigo-500/20 hover:text-indigo-200">
                 <Rocket className="h-3 w-3" />
-                {isArabic ? "جديد: الإصدار 1.5.1" : "New: Version 1.5.1"}
+                {isArabic ? "جديد: الإصدار 1.5.2" : "New: Version 1.5.2"}
               </Link>
               <span className="text-xs font-medium uppercase tracking-[0.22em] text-emerald-300/80">
                 {t.heroKicker}
@@ -121,32 +162,19 @@ export function HomeClient({ latest }: Props) {
               variants={staggerParent as any}
               className="flex flex-col gap-4 sm:flex-row sm:items-center"
             >
-              <Button
-                asChild
-                size="lg"
-                className="soft-shadow w-full sm:w-auto"
-                disabled={!latest}
-                aria-disabled={!latest}
-              >
-                <a
-                  href={
-                    hasHostedDownload
-                      ? hostedDownloadUrl
-                      : latest
-                        ? `/api/download?target=${encodeURIComponent(
-                            latest.path
-                          )}`
-                        : "#"
-                  }
-                >
-                  <Download className="h-4 w-4" />
-                  {hasHostedDownload
-                    ? t.downloadCta
-                    : latest
-                      ? t.downloadCta
-                      : t.downloadPending}
-                </a>
-              </Button>
+              <div className="ms-store-badge-wrapper inline-flex soft-shadow rounded-xl bg-gradient-to-r from-indigo-500/10 via-sky-500/10 to-emerald-500/10 p-[2px]">
+                <div className="ms-store-badge-container rounded-xl bg-white backdrop-blur-sm overflow-hidden" style={{ colorScheme: 'light' }}>
+                  <ms-store-badge
+                    productid="9PF3FZJ8ZR73"
+                    productname="EchoWave"
+                    window-mode="direct"
+                    theme="light"
+                    size="large"
+                    language={lang === "ar" ? "ar-sa" : "en-us"}
+                    animation="on"
+                  ></ms-store-badge>
+                </div>
+              </div>
             </motion.div>
 
             <motion.div
@@ -377,12 +405,12 @@ const en = {
   heroBody:
     "EchoWave is a sleek Windows app that turns any link into files you own. Paste, choose your quality, and let the waves do the rest.",
   downloadCta: "Download for Windows",
-  downloadPending: "Preparing installer…",
+  downloadPending: "Available on MS Store",
   chipOs: "Windows 10 & 11",
   chipNoAds: "No ads, no bloat",
   featuresTitle: "Built for heavy listeners & collectors.",
   featuresBody:
-    "EchoWave wraps powerful tooling in a clean interface. No terminals, no ads, just your library – exactly how you like it.",
+    "EchoWave wraps powerful tooling in a clean interface. No terminals, no ads, just your library - exactly how you like it.",
   feature1Title: "Paste & download",
   feature1Body:
     "Drop in any link from YouTube or Spotify, and EchoWave analyzes formats, thumbnails, and metadata for you.",
@@ -400,25 +428,25 @@ const en = {
     "Polished Mica-style window, dark theme, and built-in auto-updates so you're always on the latest version.",
   feature6Title: "Private & local-first",
   feature6Body:
-    "History, links, and downloads stay on your machine – no account, no tracking.",
+    "History, links, and downloads stay on your machine - no account, no tracking.",
   downloadsSectionTitle: "Downloads",
   downloadsSectionBody:
     "EchoWave is built for Windows. Mac & Linux users can follow the project on GitHub while we explore cross-platform options.",
   platformWindowsName: "Windows",
-  platformWindowsSubtitle: "Installer",
+  platformWindowsSubtitle: "Microsoft Store",
   platformWindowsStatusAvailable: "Available",
   platformWindowsStatusLocal: "Local only",
   platformMacName: "macOS",
   platformMacSubtitle: "Coming later",
   platformMacStatus: "Planned",
   platformLinuxName: "Linux",
-  platformLinuxSubtitle: "DIY builds",
-  platformLinuxStatus: "Community",
+  platformLinuxSubtitle: "Coming later",
+  platformLinuxStatus: "Planned",
   previewLabel: "EchoWave running on Windows 11",
   faqKicker: "Q&A",
   faqTitle: "What can EchoWave actually download?",
   faqBody:
-    "EchoWave can download video and audio from popular platforms like YouTube, Spotify, SoundCloud, TikTok, and Facebook, plus many other video and streaming sites – whether it’s a single video or a full playlist.",
+    "EchoWave can download video and audio from popular platforms like YouTube, Spotify, SoundCloud, TikTok, and Facebook, plus many other video and streaming sites - whether it's a single video or a full playlist.",
   faq1Q: "Can EchoWave download playlists and full albums?",
   faq1A:
     "Yes. Paste a playlist link from YouTube or Spotify and EchoWave can queue multiple videos or tracks at once, using your chosen quality and format.",
@@ -440,7 +468,7 @@ const ar = {
   heroBody:
     "إيكو ويف هو تطبيق أنيق لويندوز يحوّل أي رابط إلى ملفات تمتلكها للأبد. الصق الرابط، اختر الجودة، ودع الموجات تتكفّل بالباقي.",
   downloadCta: "تنزيل لويندوز",
-  downloadPending: "يتم تجهيز ملف التثبيت…",
+  downloadPending: "متاح على متجر مايكروسوفت",
   chipOs: "ويندوز 10 و 11",
   chipNoAds: "بدون إعلانات، بدون إزعاج",
   featuresTitle: "مصمَّم لعشّاق الاستماع وجامعي المحتوى.",
@@ -468,15 +496,15 @@ const ar = {
   downloadsSectionBody:
     "إيكو ويف متوفر حالياً لويندوز فقط. مستخدمو macOS و Linux يمكنهم متابعة المشروع بينما نستكشف دعم الأنظمة الأخرى.",
   platformWindowsName: "ويندوز",
-  platformWindowsSubtitle: "ملف التثبيت",
+  platformWindowsSubtitle: "متجر مايكروسوفت",
   platformWindowsStatusAvailable: "متاح الآن",
   platformWindowsStatusLocal: "متوفر محلياً",
   platformMacName: "macOS",
   platformMacSubtitle: "قريباً",
   platformMacStatus: "مخطَّط له",
   platformLinuxName: "لينكس",
-  platformLinuxSubtitle: "بناء يدوي",
-  platformLinuxStatus: "مجتمع المطورين",
+  platformLinuxSubtitle: "قريباً",
+  platformLinuxStatus: "مخطَّط له",
   previewLabel: "إيكو ويف يعمل على ويندوز 11",
   faqKicker: "أسئلة وأجوبة",
   faqTitle: "ما الذي يستطيع إيكو ويف تنزيله فعلياً؟",
