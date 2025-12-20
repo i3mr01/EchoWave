@@ -13,8 +13,19 @@ const en = {
   released: "Released",
   majorFeatures: "Major Features",
   downloadManagement: "Download Management",
-  uiImprovements: "UI & UX Improvements",
-  localization: "Localization",
+
+  qualityEngine: "Max Quality Engine",
+  qualityDesc: "Automatically selects the absolute best video/audio streams (including VP9/Opus) for crystal clear results.",
+  deduplication: "Smart Duplicate Detection",
+  deduplicationDesc: "Prevents re-downloading files you already have to save bandwidth and storage.",
+  batchQueue: "Batch Queueing",
+  batchQueueDesc: "Paste multiple links in succession and let EchoWave handle the queue automatically.",
+  diagnostics: "Self-Healing Diagnostics",
+  diagnosticsDesc: "New optional diagnostic system helps identify and fix issues faster than ever.",
+  net8: "Powered by .NET 8",
+  net8Desc: "Major internal upgrade for faster startup times, smaller footprint, and smoother responsiveness.",
+
+  // v1.5.2
   spotifySupport: "Spotify Support",
   spotifyDesc: "Download tracks directly from Spotify links with high-quality metadata and cover art.",
   playlistDownloads: "Playlist Downloads",
@@ -31,7 +42,7 @@ const en = {
   clearHistoryDesc: "Quickly remove completed downloads from the list.",
   settingsRedesign: "Settings Redesign",
   settingsDesc: "A completely new, cleaner, and more organized Settings UI.",
-  perfectInstaller: "Microsoft Store Release",
+  perfectInstaller: "Microsoft Store Release (Preview)",
   installerDesc: "EchoWave is now available on the official Microsoft Store for easier installation and automatic updates.",
   appIconFix: "App Icon Fix",
   iconFixDesc: "Solved the issue where the logo wasn't showing on the Taskbar or Desktop shortcuts.",
@@ -41,6 +52,8 @@ const en = {
   arabicDesc: "All new features (Retry, Updates, etc.) are fully translated.",
   rtlFixes: "RTL Layout Fixes",
   rtlDesc: "Fixed indentation and layout for \"Playlist Videos\" in Arabic mode.",
+  uiImprovements: "UI & UX Improvements",
+  localization: "Localization",
 };
 
 const ar = {
@@ -51,8 +64,19 @@ const ar = {
   released: "تاريخ الإصدار",
   majorFeatures: "الميزات الرئيسية",
   downloadManagement: "إدارة التنزيلات",
-  uiImprovements: "تحسينات الواجهة والتجربة",
-  localization: "الترجمة",
+
+  qualityEngine: "محرك الجودة القصوى",
+  qualityDesc: "يختار تلقائياً أفضل جودة فيديو/صوت متاحة (بما في ذلك VP9/Opus) لنتائج فائقة الوضوح.",
+  deduplication: "كشف التكرار الذكي",
+  deduplicationDesc: "يمنع إعادة تنزيل الملفات الموجودة مسبقاً لتوفير البيانات ومساحة التخزين.",
+  batchQueue: "طابور التنزيل الجماعي",
+  batchQueueDesc: "الصق روابط متعددة بالتتابع واترك إيكو ويف يدير الطابور تلقائياً.",
+  diagnostics: "تشخيص ذاتي وإصلاح",
+  diagnosticsDesc: "نظام تشخيص اختياري جديد يساعد في تحديد المشاكل وإصلاحها بشكل أسرع من أي وقت مضى.",
+  net8: "مدعوم بـ .NET 8",
+  net8Desc: "ترقية داخلية كبيرة لسرعة تشغيل أعلى، استهلاك أقل، واستجابة أكثر سلاسة.",
+
+  // v1.5.2
   spotifySupport: "دعم سبوتيفاي",
   spotifyDesc: "حمّل الأغاني مباشرة من روابط سبوتيفاي مع بيانات وصفية عالية الجودة وأغلفة الألبومات.",
   playlistDownloads: "تنزيل قوائم التشغيل",
@@ -79,6 +103,8 @@ const ar = {
   arabicDesc: "جميع الميزات الجديدة (إعادة المحاولة، التحديثات، إلخ) مترجمة بالكامل.",
   rtlFixes: "إصلاحات تخطيط RTL",
   rtlDesc: "تم إصلاح المسافات البادئة والتخطيط لـ \"فيديوهات قائمة التشغيل\" في الوضع العربي.",
+  uiImprovements: "تحسينات الواجهة والتجربة",
+  localization: "الترجمة",
 };
 
 type FeatureItem = {
@@ -88,7 +114,40 @@ type FeatureItem = {
   category: "major" | "download" | "ui" | "localization";
 };
 
-const features: FeatureItem[] = [
+const features_1_6: FeatureItem[] = [
+  {
+    icon: <Sparkles className="h-5 w-5" />,
+    titleKey: "qualityEngine",
+    descKey: "qualityDesc",
+    category: "major",
+  },
+  {
+    icon: <List className="h-5 w-5" />,
+    titleKey: "batchQueue",
+    descKey: "batchQueueDesc",
+    category: "major",
+  },
+  {
+    icon: <Rocket className="h-5 w-5" />,
+    titleKey: "net8",
+    descKey: "net8Desc",
+    category: "major",
+  },
+  {
+    icon: <RotateCcw className="h-5 w-5" />,
+    titleKey: "deduplication",
+    descKey: "deduplicationDesc",
+    category: "download",
+  },
+  {
+    icon: <FileText className="h-5 w-5" />,
+    titleKey: "diagnostics",
+    descKey: "diagnosticsDesc",
+    category: "ui",
+  },
+];
+
+const features_1_5: FeatureItem[] = [
   {
     icon: <Download className="h-5 w-5" />,
     titleKey: "spotifySupport",
@@ -173,11 +232,17 @@ export function UpdatesClient() {
   const [lang, setLang] = useState<"en" | "ar">("en");
   const t = lang === "en" ? en : ar;
   const isArabic = lang === "ar";
+  
+  // v1.6.0 Grouping
+  const majorFeatures16 = features_1_6.filter((f) => f.category === "major");
+  const downloadFeatures16 = features_1_6.filter((f) => f.category === "download");
+  const uiFeatures16 = features_1_6.filter((f) => f.category === "ui");
 
-  const majorFeatures = features.filter((f) => f.category === "major");
-  const downloadFeatures = features.filter((f) => f.category === "download");
-  const uiFeatures = features.filter((f) => f.category === "ui");
-  const localizationFeatures = features.filter((f) => f.category === "localization");
+  // v1.5.2 Grouping
+  const majorFeatures15 = features_1_5.filter((f) => f.category === "major");
+  const downloadFeatures15 = features_1_5.filter((f) => f.category === "download");
+  const uiFeatures15 = features_1_5.filter((f) => f.category === "ui");
+  const locFeatures15 = features_1_5.filter((f) => f.category === "localization");
 
   return (
     <main className="echowave-shell relative overflow-hidden" dir={isArabic ? "rtl" : "ltr"}>
@@ -240,7 +305,7 @@ export function UpdatesClient() {
             </div>
             
             <h1 className="mb-4 text-5xl font-bold tracking-tight text-white sm:text-6xl">
-              {t.version} <span className="bg-gradient-to-r from-indigo-300 via-purple-300 to-pink-300 bg-clip-text text-transparent">1.5.2</span>
+              {t.version} <span className="bg-gradient-to-r from-indigo-300 via-purple-300 to-pink-300 bg-clip-text text-transparent">1.6</span>
             </h1>
             
             <p className="max-w-2xl text-lg text-zinc-300">
@@ -249,7 +314,7 @@ export function UpdatesClient() {
           </div>
         </motion.div>
 
-        {/* Major Features */}
+        {/* Major Features 1.6 */}
         <motion.section
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -263,8 +328,8 @@ export function UpdatesClient() {
             </h3>
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
           </div>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {majorFeatures.map((feature, idx) => (
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-2">
+            {majorFeatures16.map((feature, idx) => (
               <div
                 key={feature.titleKey}
                 className="group relative overflow-hidden rounded-xl border border-indigo-500/20 bg-zinc-950/80 p-5 backdrop-blur-sm transition-all duration-300 hover:border-indigo-400/40 hover:bg-zinc-900/80"
@@ -284,22 +349,15 @@ export function UpdatesClient() {
           </div>
         </motion.section>
 
-        {/* Download Management */}
+        {/* Other Features 1.6 */}
         <motion.section
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.4, delay: 0.25 }}
-          className="mb-12"
+          className="mb-16"
         >
-          <div className="mb-6 flex items-center gap-3">
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-sky-500/50 to-transparent" />
-            <h3 className="text-xl font-bold text-zinc-50">
-              {t.downloadManagement}
-            </h3>
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-sky-500/50 to-transparent" />
-          </div>
-          <div className="grid gap-3 sm:grid-cols-3">
-            {downloadFeatures.map((feature, idx) => (
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-2">
+            {[...downloadFeatures16, ...uiFeatures16].map((feature, idx) => (
               <div
                 key={feature.titleKey}
                 className="group relative overflow-hidden rounded-xl border border-sky-500/20 bg-zinc-950/80 p-5 backdrop-blur-sm transition-all duration-300 hover:border-sky-400/40 hover:bg-zinc-900/80"
@@ -318,73 +376,76 @@ export function UpdatesClient() {
           </div>
         </motion.section>
 
-        {/* UI Improvements */}
-        <motion.section
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.4, delay: 0.3 }}
-          className="mb-12"
-        >
-          <div className="mb-6 flex items-center gap-3">
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent" />
-            <h3 className="text-xl font-bold text-zinc-50">
-              {t.uiImprovements}
-            </h3>
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent" />
-          </div>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {uiFeatures.map((feature, idx) => (
-              <div
-                key={feature.titleKey}
-                className="group relative overflow-hidden rounded-xl border border-emerald-500/20 bg-zinc-950/80 p-5 backdrop-blur-sm transition-all duration-300 hover:border-emerald-400/40 hover:bg-zinc-900/80"
-              >
-                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-400/30 transition-transform duration-300 group-hover:scale-110">
-                  {feature.icon}
-                </div>
-                <h4 className="mb-1.5 text-sm font-bold text-zinc-50">
-                  {t[feature.titleKey]}
-                </h4>
-                <p className="text-xs leading-relaxed text-zinc-400">
-                  {t[feature.descKey]}
-                </p>
-              </div>
-            ))}
-          </div>
-        </motion.section>
+        {/* --- DIVIDER for 1.5.2 --- */}
+        <div className="mb-12 flex items-center justify-center gap-4 opacity-50">
+           <div className="h-px w-24 bg-zinc-700"></div>
+           <span className="text-sm font-semibold uppercase tracking-widest text-zinc-500">v1.5.2</span>
+           <div className="h-px w-24 bg-zinc-700"></div>
+        </div>
 
-        {/* Localization */}
-        <motion.section
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.4, delay: 0.35 }}
-          className="mb-10"
-        >
-          <div className="mb-6 flex items-center gap-3">
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
-            <h3 className="text-xl font-bold text-zinc-50">
-              {t.localization}
+        {/* Major Features 1.5 */}
+        <div className="mb-12">
+            {/* Reusing Major Features Style but static */}
+          <div className="mb-6 flex items-center gap-3 opacity-80">
+            <h3 className="text-lg font-bold text-zinc-400">
+              {t.majorFeatures}
             </h3>
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
           </div>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {localizationFeatures.map((feature, idx) => (
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 opacity-80 grayscale transition-all hover:grayscale-0 hover:opacity-100">
+            {majorFeatures15.map((feature, idx) => (
               <div
                 key={feature.titleKey}
-                className="group relative overflow-hidden rounded-xl border border-purple-500/20 bg-zinc-950/80 p-5 backdrop-blur-sm transition-all duration-300 hover:border-purple-400/40 hover:bg-zinc-900/80"
+                className="group relative overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950/40 p-5 backdrop-blur-sm transition-all duration-300 hover:border-indigo-500/20 hover:bg-zinc-900/60"
               >
-                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-purple-500/20 text-purple-300 ring-1 ring-purple-400/30 transition-transform duration-300 group-hover:scale-110">
+                <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-lg bg-zinc-800/50 text-zinc-400 ring-1 ring-zinc-700/50 group-hover:text-indigo-300 group-hover:ring-indigo-500/30">
                   {feature.icon}
                 </div>
-                <h4 className="mb-1.5 text-sm font-bold text-zinc-50">
+                <h4 className="mb-1.5 text-sm font-bold text-zinc-400 group-hover:text-zinc-200">
                   {t[feature.titleKey]}
                 </h4>
-                <p className="text-xs leading-relaxed text-zinc-400">
+                <p className="text-xs leading-relaxed text-zinc-500 group-hover:text-zinc-400">
                   {t[feature.descKey]}
                 </p>
               </div>
             ))}
           </div>
-        </motion.section>
+        </div>
+
+        {/* Download Features 1.5 */}
+        <div className="mb-12">
+           <div className="mb-6 flex items-center gap-3 opacity-80">
+             <h3 className="text-lg font-bold text-zinc-400">{t.downloadManagement}</h3>
+           </div>
+           <div className="grid gap-3 sm:grid-cols-3 opacity-80 grayscale transition-all hover:grayscale-0 hover:opacity-100">
+             {downloadFeatures15.map((feature) => (
+                <div key={feature.titleKey} className="group relative overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950/40 p-5 hover:border-sky-500/20">
+                   <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-lg bg-zinc-800/50 text-zinc-400 ring-1 ring-zinc-700/50 group-hover:text-sky-300 group-hover:ring-sky-500/30">
+                     {feature.icon}
+                   </div>
+                   <h4 className="mb-1 text-sm font-bold text-zinc-400 group-hover:text-zinc-200">{t[feature.titleKey]}</h4>
+                   <p className="text-xs leading-relaxed text-zinc-500 group-hover:text-zinc-400">{t[feature.descKey]}</p>
+                </div>
+             ))}
+           </div>
+        </div>
+        
+        {/* UI & Loc Features 1.5 */}
+        <div className="mb-12">
+             <div className="mb-6 flex items-center gap-3 opacity-80">
+                 <h3 className="text-lg font-bold text-zinc-400">{t.uiImprovements}</h3>
+             </div>
+             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 opacity-80 grayscale transition-all hover:grayscale-0 hover:opacity-100">
+                 {[...uiFeatures15, ...locFeatures15].map((feature) => (
+                     <div key={feature.titleKey} className="group relative overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950/40 p-5 hover:border-emerald-500/20">
+                         <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-lg bg-zinc-800/50 text-zinc-400 ring-1 ring-zinc-700/50 group-hover:text-emerald-300 group-hover:ring-emerald-500/30">
+                             {feature.icon}
+                         </div>
+                         <h4 className="mb-1 text-sm font-bold text-zinc-400 group-hover:text-zinc-200">{t[feature.titleKey]}</h4>
+                         <p className="text-xs leading-relaxed text-zinc-500 group-hover:text-zinc-400">{t[feature.descKey]}</p>
+                     </div>
+                 ))}
+             </div>
+        </div>
       </div>
     </main>
   );

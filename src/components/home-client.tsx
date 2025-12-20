@@ -3,11 +3,25 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { MonitorSmartphone, Shield, Rocket, Globe } from "lucide-react";
-import { motion } from "framer-motion";
+import { 
+  MonitorSmartphone, 
+  Shield, 
+  Rocket, 
+  Globe, 
+  X, 
+  ChevronLeft, 
+  ChevronRight, 
+  Circle 
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import type { EchoWaveBuild } from "@/lib/get-latest-build";
 import { StoreNotification } from "@/components/store-notification";
-import screenshot from "../../Resources/screenshot.png";
+import img1 from "../../Resources/1.png";
+import img2 from "../../Resources/2.png";
+import img3 from "../../Resources/3.png";
+import img4 from "../../Resources/4.png";
+
+const screenshots = [img1, img2, img3, img4];
 
 const staggerParent = {
   hidden: { opacity: 0, y: 12 },
@@ -27,6 +41,8 @@ type Props = {
 
 export function HomeClient({ latest }: Props) {
   const [lang, setLang] = useState<"en" | "ar">("en");
+  const [isZoomed, setIsZoomed] = useState(false);
+  const [currentScreenIndex, setCurrentScreenIndex] = useState(0);
 
   const t = lang === "en" ? en : ar;
   const isArabic = lang === "ar";
@@ -35,42 +51,45 @@ export function HomeClient({ latest }: Props) {
   const hasHostedDownload = hostedDownloadUrl.length > 0;
 
   useEffect(() => {
-    // Force light color scheme for MS Store badge
-    const forceLight = () => {
-      const badgeContainer = document.querySelector('.ms-store-badge-container');
+    // Re-apply badge properties on mount to fix client-side navigation issues
+    const initBadge = () => {
       const badge = document.querySelector('ms-store-badge');
-      
-      if (badgeContainer) {
-        (badgeContainer as HTMLElement).style.colorScheme = 'light';
-        badgeContainer.setAttribute('data-color-scheme', 'light');
-      }
-      
       if (badge) {
-        (badge as HTMLElement).style.colorScheme = 'light';
-        badge.setAttribute('data-color-scheme', 'light');
+        // Explicitly set properties to wake up the component
         badge.setAttribute('theme', 'light');
+        badge.setAttribute('animation', 'on');
       }
     };
-    
+
     // Run immediately
-    forceLight();
-    
-    // Run after a delay to catch late rendering
-    const timer = setTimeout(forceLight, 100);
-    
-    // Run on any page visibility change
-    const handleVisibility = () => {
-      if (document.visibilityState === 'visible') {
-        forceLight();
-      }
-    };
-    document.addEventListener('visibilitychange', handleVisibility);
-    
-    return () => {
-      clearTimeout(timer);
-      document.removeEventListener('visibilitychange', handleVisibility);
-    };
+    initBadge();
+
+    // Run slightly delayed to ensure DOM is ready
+    const timer = setTimeout(initBadge, 100);
+    return () => clearTimeout(timer);
   }, []);
+
+  const nextScreenshot = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setCurrentScreenIndex((prev) => (prev + 1) % screenshots.length);
+  };
+
+  const prevScreenshot = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setCurrentScreenIndex((prev) => (prev - 1 + screenshots.length) % screenshots.length);
+  };
+
+  // Keyboard navigation for zoom mode
+  useEffect(() => {
+    if (!isZoomed) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight") setCurrentScreenIndex((prev) => (prev + 1) % screenshots.length);
+      if (e.key === "ArrowLeft") setCurrentScreenIndex((prev) => (prev - 1 + screenshots.length) % screenshots.length);
+      if (e.key === "Escape") setIsZoomed(false);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isZoomed]);
 
   return (
     <main className="echowave-shell" dir={lang === "ar" ? "rtl" : "ltr"}>
@@ -135,7 +154,7 @@ export function HomeClient({ latest }: Props) {
             >
               <Link href="/updates" className="inline-flex items-center gap-2 rounded-full bg-indigo-500/10 px-3 py-1 text-xs font-medium text-indigo-300 ring-1 ring-indigo-500/20 transition hover:bg-indigo-500/20 hover:text-indigo-200">
                 <Rocket className="h-3 w-3" />
-                {isArabic ? "جديد: الإصدار 1.5.2" : "New: Version 1.5.2"}
+                {isArabic ? "جديد: الإصدار 1.6" : "New: Version 1.6"}
               </Link>
               <span className="text-xs font-medium uppercase tracking-[0.22em] text-emerald-300/80">
                 {t.heroKicker}
@@ -162,18 +181,16 @@ export function HomeClient({ latest }: Props) {
               variants={staggerParent as any}
               className="flex flex-col gap-4 sm:flex-row sm:items-center"
             >
-              <div className="ms-store-badge-wrapper inline-flex soft-shadow rounded-xl bg-gradient-to-r from-indigo-500/10 via-sky-500/10 to-emerald-500/10 p-[2px]">
-                <div className="ms-store-badge-container rounded-xl bg-white backdrop-blur-sm overflow-hidden" style={{ colorScheme: 'light' }}>
-                  <ms-store-badge
-                    productid="9PF3FZJ8ZR73"
-                    productname="EchoWave"
-                    window-mode="direct"
-                    theme="light"
-                    size="large"
-                    language={lang === "ar" ? "ar-sa" : "en-us"}
-                    animation="on"
-                  />
-                </div>
+              <div className="ms-store-badge-container inline-flex">
+                <ms-store-badge
+                  productid="9PF3FZJ8ZR73"
+                  productname="EchoWave"
+                  window-mode="direct"
+                  theme="light"
+                  size="large"
+                  language={lang === "ar" ? "ar-sa" : "en-us"}
+                  animation="on"
+                />
               </div>
             </motion.div>
 
@@ -192,7 +209,7 @@ export function HomeClient({ latest }: Props) {
             </motion.div>
           </motion.div>
 
-          {/* Hero app preview */}
+          {/* Hero app preview - Carousel */}
           <motion.div
             initial={{ opacity: 0, y: 26, rotate: 2 }}
             animate={{ opacity: 1, y: 0, rotate: 0 }}
@@ -200,25 +217,71 @@ export function HomeClient({ latest }: Props) {
             className="relative mt-6 flex items-center justify-center"
           >
             {/* Gradient-bordered app frame */}
-            <div className="relative w-full max-w-xl rounded-[1.8rem] bg-gradient-to-tr from-indigo-500/70 via-sky-500/40 to-emerald-400/60 p-[1.5px] shadow-[0_26px_70px_rgba(15,23,42,0.95)]">
-              <div className="relative overflow-hidden rounded-[1.65rem] bg-zinc-950/95">
-                {/* Screenshot, original proportions (no crop) */}
-                <div className="relative w-full">
-                  <Image
-                    src={screenshot}
-                    alt="EchoWave desktop app"
-                    className="h-auto w-full object-contain"
-                    priority
-                  />
+            <div 
+              className="group relative w-full max-w-2xl cursor-zoom-in rounded-[1.8rem] bg-gradient-to-tr from-indigo-500/70 via-sky-500/40 to-emerald-400/60 p-[1.5px] shadow-[0_26px_70px_rgba(15,23,42,0.95)] transition-transform active:scale-[0.98]"
+              onClick={() => setIsZoomed(true)}
+            >
+              <div className="relative overflow-hidden rounded-[1.65rem] bg-zinc-950/95 aspect-[16/10]">
+                {/* Screenshot */}
+                <div className="relative w-full h-full flex items-center justify-center bg-zinc-900">
+                  <AnimatePresence mode="wait">
+                    <motion.div 
+                      key={currentScreenIndex}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      transition={{ duration: 0.3 }}
+                      className="absolute inset-0"
+                    >
+                      <Image
+                        src={screenshots[currentScreenIndex]}
+                        alt="EchoWave desktop app"
+                        className="h-full w-full object-contain"
+                        priority
+                      />
+                    </motion.div>
+                  </AnimatePresence>
 
                   {/* Soft inner vignette */}
                   <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_10%,transparent,transparent_55%,rgba(15,23,42,0.85)_95%)]" />
                 </div>
+                
+                {/* Carousel Controls (visible on hover) */}
+                <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between px-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                   <button 
+                     onClick={prevScreenshot}
+                     className="rounded-full bg-black/50 p-1.5 text-white/70 backdrop-blur-md transition hover:bg-black/70 hover:text-white"
+                   >
+                     <ChevronLeft className="h-5 w-5" />
+                   </button>
+                   <button 
+                     onClick={nextScreenshot}
+                     className="rounded-full bg-black/50 p-1.5 text-white/70 backdrop-blur-md transition hover:bg-black/70 hover:text-white"
+                   >
+                     <ChevronRight className="h-5 w-5" />
+                   </button>
+                </div>
 
-                {/* Floating label */}
-                <div className="pointer-events-none absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-2 rounded-full bg-zinc-900/85 px-4 py-1.5 text-[0.7rem] text-zinc-200 ring-1 ring-white/10 backdrop-blur-md">
-                  <span className="inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_0_4px_rgba(34,197,94,0.35)]" />
-                  <span>{t.previewLabel}</span>
+                {/* Floating label & Dots */}
+                <div className="pointer-events-none absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-3 rounded-full bg-zinc-900/85 px-4 py-1.5 text-[0.7rem] text-zinc-200 ring-1 ring-white/10 backdrop-blur-md">
+                  <div className="flex gap-1.5 pointer-events-auto">
+                    {screenshots.map((_, idx) => (
+                      <button
+                        key={idx}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setCurrentScreenIndex(idx);
+                        }}
+                        className={`h-1.5 rounded-full transition-all ${
+                          idx === currentScreenIndex 
+                            ? "w-4 bg-emerald-400 shadow-[0_0_0_2px_rgba(34,197,94,0.25)]" 
+                            : "w-1.5 bg-zinc-600 hover:bg-zinc-500"
+                        }`}
+                        aria-label={`Go to screenshot ${idx + 1}`}
+                      />
+                    ))}
+                  </div>
+                  <span className="pl-2 border-l border-white/10">{t.previewLabel}</span>
                 </div>
               </div>
             </div>
@@ -335,6 +398,82 @@ export function HomeClient({ latest }: Props) {
           </div>
         </section>
       </div>
+
+      {/* Zoom Modal - Carousel Enabled */}
+      <AnimatePresence>
+        {isZoomed && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsZoomed(false)}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-md"
+          >
+            <motion.div
+              layoutId="app-screenshot"
+              className="relative max-h-[90vh] w-full max-w-6xl overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+                <div className="relative flex items-center justify-center">
+                    <AnimatePresence mode="wait">
+                       <motion.div
+                          key={currentScreenIndex}
+                          initial={{ opacity: 0, scale: 0.96 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.96 }}
+                          transition={{ duration: 0.2 }}
+                          className="relative"
+                       >
+                         <Image
+                            src={screenshots[currentScreenIndex]}
+                            alt="EchoWave desktop app"
+                            className="h-auto w-full max-h-[85vh] rounded-xl object-contain shadow-2xl"
+                            priority
+                          />
+                       </motion.div>
+                    </AnimatePresence>
+
+                     {/* Modal Controls */}
+                     <button
+                        onClick={prevScreenshot}
+                        className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-3 text-white/70 backdrop-blur-md transition hover:bg-black/70 hover:text-white"
+                     >
+                        <ChevronLeft className="h-8 w-8" />
+                     </button>
+                     <button
+                        onClick={nextScreenshot}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-3 text-white/70 backdrop-blur-md transition hover:bg-black/70 hover:text-white"
+                     >
+                        <ChevronRight className="h-8 w-8" />
+                     </button>
+
+                     {/* Close Button */}
+                     <button
+                        onClick={() => setIsZoomed(false)}
+                        className="absolute right-4 top-4 rounded-full bg-black/50 p-2 text-white/70 backdrop-blur-md transition hover:bg-black/70 hover:text-white z-10"
+                     >
+                        <X className="h-6 w-6" />
+                     </button>
+
+                     {/* Modal Dots */}
+                     <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 rounded-full bg-black/50 px-4 py-2 backdrop-blur-md">
+                        {screenshots.map((_, idx) => (
+                          <button
+                            key={idx}
+                            onClick={() => setCurrentScreenIndex(idx)}
+                            className={`h-2 rounded-full transition-all ${
+                              idx === currentScreenIndex 
+                                ? "w-6 bg-white" 
+                                : "w-2 bg-white/40 hover:bg-white/60"
+                            }`}
+                          />
+                        ))}
+                     </div>
+                </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </main>
   );
 }
@@ -413,19 +552,19 @@ const en = {
     "EchoWave wraps powerful tooling in a clean interface. No terminals, no ads, just your library - exactly how you like it.",
   feature1Title: "Paste & download",
   feature1Body:
-    "Drop in any link from YouTube or Spotify, and EchoWave analyzes formats, thumbnails, and metadata for you.",
+    "Drop in any link from YouTube or Spotify, or paste multiple links at once. EchoWave handles formats, batched queues, and metadata for you.",
   feature2Title: "Smart quality",
   feature2Body:
-    "Choose best available 4K/8K, Full HD, or lean files for playlists and archives.",
+    "Auto-selects the absolute best 4K/8K quality (now including VP9 & Opus) or lean files for playlists and archives.",
   feature3Title: "Audio-first mode",
   feature3Body:
     "Rip just the audio with embedded thumbnail, metadata, and optional subtitles.",
   feature4Title: "Playlists & Queue",
   feature4Body:
-    "Download entire playlists from YouTube or Spotify in a single click, with a persistent history.",
+    "Download entire playlists or queues in a click. Smart duplicate detection skips files you already own to save bandwidth.",
   feature5Title: "Auto-Updating",
   feature5Body:
-    "Polished Mica-style window, dark theme, and built-in auto-updates so you're always on the latest version.",
+    "Polished Mica-style window, dark theme, and built-in auto-updates with self-healing diagnostics.",
   feature6Title: "Private & local-first",
   feature6Body:
     "History, links, and downloads stay on your machine - no account, no tracking.",
@@ -449,13 +588,13 @@ const en = {
     "EchoWave can download video and audio from popular platforms like YouTube, Spotify, SoundCloud, TikTok, and Facebook, plus many other video and streaming sites - whether it's a single video or a full playlist.",
   faq1Q: "Can EchoWave download playlists and full albums?",
   faq1A:
-    "Yes. Paste a playlist link from YouTube or Spotify and EchoWave can queue multiple videos or tracks at once, using your chosen quality and format.",
+    "Yes. Paste a playlist link or multiple individual links. EchoWave queues them all up and handles them in the background, skipping duplicates if you already have them.",
   faq2Q: "What formats and qualities are available?",
   faq2A:
-    "You can target best available 4K/8K where supported, standard HD options, or lighter files. For audio you can grab high-quality formats suitable for music libraries.",
+    "EchoWave targets the absolute best quality available, including MP4, WebM (VP9), and MP3/M4A/Opus for audio. It automatically merges video and audio streams for the highest fidelity.",
   faq3Q: "Is EchoWave safe to use?",
   faq3A:
-    "EchoWave runs locally on your Windows machine and stores history on your disk only. Always respect the terms of service and copyright rules for the sites you use.",
+    "EchoWave runs locally on your Windows machine and stores history on your disk only. It includes self-healing diagnostics to keep running smoothly. Always respect terms of service.",
 } as const;
 
 const ar = {
@@ -476,19 +615,19 @@ const ar = {
     "يجمع إيكو ويف بين أدوات قوية وواجهة بسيطة. لا أوامر معقّدة، لا إعلانات، فقط مكتبتك بالشكل الذي تريده.",
   feature1Title: "الصق الرابط وابدأ التنزيل",
   feature1Body:
-    "ألصق أي رابط من يوتيوب أو سبوتيفاي وسيقوم إيكو ويف بتحليل الجودة، التنسيقات، والصورة المصغّرة من أجلك.",
+    "ألصق رابطاً واحداً أو مجموعة روابط دفعة واحدة. إيكو ويف يدير الطابور، التنسيقات، والصور المصغّرة تلقائياً.",
   feature2Title: "جودة ذكية",
   feature2Body:
-    "اختر أفضل جودة متاحة 4K/8K أو دقّة أقل للقوائم الطويلة والتحميل السريع.",
+    "يختار تلقائياً أفضل جودة 4K/8K متاحة (الآن مع دعم VP9/Opus) أو ملفات أخف للأرشفة.",
   feature3Title: "وضع الصوت فقط",
   feature3Body:
     "استخرج الصوت فقط مع تضمين الصورة المصغّرة والبيانات الوصفية والترجمة اختيارياً.",
-  feature4Title: "قوائم التشغيل وقائمة الانتظار",
+  feature4Title: "قوائم التشغيل والانتظار",
   feature4Body:
-    "حمّل قوائم تشغيل كاملة من يوتيوب أو سبوتيفاي بنقرة واحدة، مع سجل دائم لكل ما قمت بتنزيله.",
-  feature5Title: "تحديث تلقائي وتصميم عصري",
+    "حمّل قوائم كاملة بنقرة واحدة. ميزة كشف التكرار الذكي تتخطى الملفات التي تمتلكها مسبقاً لتوفير الإنترنت.",
+  feature5Title: "تحديث تلقائي",
   feature5Body:
-    "واجهة داكنة بنمط Mica مع ميزة التحديث التلقائي لتبقى دائماً على أحدث إصدار.",
+    "واجهة داكنة بنمط Mica، مع تحديثات تلقائية ونظام تشخيص ذاتي لإصلاح الأعطال.",
   feature6Title: "خصوصية أولاً",
   feature6Body:
     "كل الروابط والسجل والملفات تبقى على جهازك فقط - لا حسابات، لا تتبّع.",
@@ -512,13 +651,11 @@ const ar = {
     "إيكو ويف يستطيع تنزيل الفيديو والصوت من منصّات شهيرة مثل يوتيوب، سبوتيفاي، ساوندكلاود، تيك توك، وفيسبوك، بالإضافة إلى كثير من مواقع الفيديو والبث الأخرى، سواء كانت فيديوهات منفردة أو قوائم تشغيل كاملة.",
   faq1Q: "هل يمكن لإيكو ويف تنزيل قوائم تشغيل وألبومات كاملة؟",
   faq1A:
-    "نعم. فقط ألصق رابط قائمة تشغيل من يوتيوب أو سبوتيفاي وسيقوم إيكو ويف بإنشاء قائمة تنزيل لعدّة فيديوهات أو مقاطع صوتية دفعة واحدة.",
+    "نعم. ألصق رابط قائمة تشغيل أو عدة روابط فردية. سيقوم إيكو ويف بوضعها في الطابور وإدارتها في الخلفية، مع تخطي التكرارات إذا كنت تمتلك الملفات مسبقاً.",
   faq2Q: "ما هي الصيغ والجودات المتاحة؟",
   faq2A:
-    "يمكنك اختيار أفضل جودة متاحة حتى 4K/8K عند توفرها، أو استخدام دقّات HD القياسية، أو ملفات أخف للقوائم الطويلة. للصوت يمكنك تنزيل صيغ عالية الجودة مناسبة لمكتبة الموسيقى لديك.",
+    "يستهدف إيكو ويف تلقائياً أفضل جودة متاحة، بما في ذلك MP4 و WebM (VP9) و MP3/M4A/Opus للصوت. يقوم بدمج الفيديو والصوت للحصول على أعلى دقة ممكنة.",
   faq3Q: "هل استخدام إيكو ويف آمن؟",
   faq3A:
-    "إيكو ويف يعمل بالكامل على جهاز ويندوز الخاص بك، ويخزّن السجل محلياً فقط. احرص دائماً على احترام شروط الاستخدام وحقوق النشر للمواقع التي تقوم بالتنزيل منها.",
+    "إيكو ويف يعمل محلياً على جهازك ويخزن السجل على القرص فقط. يتضمن نظام تشخيص ذاتي لضمان العمل بسلاسة. احرص دائماً على احترام شروط الخدمة.",
 } as const;
-
-
